@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal - SIJUH</title>
+    <link rel="stylesheet" href="diseño.css"> <!-- Archivo de estilos CSS -->
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido a SIJUH</h1>
+        <h2>Iniciar Sesión o Registro</h2>
+        <!-- Botón de Inicio a la izquierda -->
+<button id="inicioBtn" style="position: fixed; left: 20px; top: 20px; padding: 5px 10px; background-color: #D8973C; color: white; border: none; border-radius: 5px; cursor: pointer; width: auto;">
+    Inicio
+</button>
+
+<script>
+    // Redirigir a la página principal
+    document.getElementById('inicioBtn').addEventListener('click', () => {
+        window.location.href = 'principal.html'; // Redirigir a principal.html
+    });
+</script>
+
+        <!-- Campos de inicio de sesión -->
+        <input type="email" id="email" placeholder="Correo electrónico" required>
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <span class="toggle-password" id="togglePassword">&#128065;</span> <!-- Ícono de ojo -->
+        </div>
+        <button id="loginBtn">Iniciar Sesión</button>
+        <button id="registerBtn">Registrarse</button>
+    </div>
+
+    <script type="module">
+        import { auth } from './firebaseConfig.js';
+        import { signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js';
+
+        // Redirección al registro
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            window.location.href = 'registro.html'; // Redirige a la página de registro
+        });
+
+        // Mostrar/Ocultar contraseña
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        
+        togglePassword.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈'; // Cambia el ícono
+        });
+
+        // Función para iniciar sesión y verificar si el usuario está registrado
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Verificación de credenciales de Admin
+            if (email === 'Admin' && password === 'Admin') {
+                // Si el correo y la contraseña coinciden con "Admin", redirigir al panel de administrador
+                alert('¡Bienvenido, Administrador!');
+                window.location.href = 'admin.html'; // Redirigir al panel de admin
+                return; // Detener el proceso aquí
+            }
+
+            try {
+                // Intentar iniciar sesión con Firebase Authentication
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Si el inicio de sesión es exitoso, redirigir al usuario
+                alert('¡Bienvenido de nuevo!');
+                window.location.href = 'https://www.facebook.com/SIJUH1'; // Redirige a la página de Facebook
+            } catch (error) {
+                if (error.code === 'auth/user-not-found') {
+                    // Si el usuario no está registrado
+                    alert('Usuario no registrado. Por favor, regístrate.');
+                    window.location.href = 'registro.html'; // Redirigir a la página de registro
+                } else {
+                    // Si hubo algún otro error
+                    alert('Error al iniciar sesión: ' + error.message);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

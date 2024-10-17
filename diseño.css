@@ -1,0 +1,184 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background: url('imagenes/fondo_mario.jpg') no-repeat center center fixed;
+  background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+h1, h2 {
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6); /* Fondo semitransparente para hacer legible el texto */
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+input {
+  width: calc(100% - 20px);
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  outline: none;
+}
+
+input::placeholder {
+  color: #e0e0e0;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: none;
+  background-color: #D8973C; /* Botón mostaza */
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s ease;
+  text-transform: uppercase;
+}
+
+button:hover {
+  background-color: #B3762C; /* Mostaza más oscuro */
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.user-list {
+  margin-top: 20px;
+  padding: 0;
+  list-style-type: none;
+}
+
+.user-list li {
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
+  border-radius: 10px;
+  color: white;
+  transition: 0.3s ease;
+}
+
+.user-list li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Footer */
+footer {
+  background-color: #0E0E52; /* Azul */
+  color: #FFFFFF; /* Texto blanco */
+  padding: 20px;
+  text-align: center;
+}
+
+footer a {
+  color: #FFFFFF; /* Enlaces en blanco */
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #D8973C; /* Enlace en mostaza al hacer hover */
+}
+.password-container {
+  position: relative;
+  width: 100%; /* Asegura que el contenedor ocupe el 100% del espacio disponible */
+  max-width: 100%; /* Asegura que no se desborde */
+}
+
+.password-container input {
+  width: 93%; /* Asegura que el campo de entrada ocupe todo el ancho del contenedor */
+  padding-right: 40px; /* Aumenta el espacio para el ícono del ojo */
+  padding-left: 10px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
+  color: white;
+  outline: none;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px; /* Ajusta la posición para que el ícono esté bien dentro del borde */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px; /* Tamaño del ícono */
+  color: #FFFFFF; /* Color del ícono */
+}
+
+.toggle-password:hover {
+  color: #D8973C; /* Cambia a mostaza al pasar el mouse */
+}
+.combo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.combo-img {
+  width: 100%; /* Ajustar según el tamaño deseado */
+  max-width: 300px; /* Limita el ancho máximo */
+  border-radius: 10px;
+}
+
+.combo-btn {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #D8973C;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.combo-btn:hover {
+  background-color: #B3762C;
+}
+.event-status {
+  appearance: none; /* Elimina el estilo predeterminado del navegador */
+  background-color: #ffffff; /* Fondo blanco */
+  border: 1px solid #ccc; /* Borde gris */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 10px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente */
+  font-weight: 500; /* Peso de fuente */
+  width: 100%; /* Ancho completo */
+  transition: border-color 0.5s; /* Transición suave para el borde */
+  outline: none; /* Sin contorno */
+  text-align: center; /* Centrar el texto */
+}
+
+/* Para centrar el texto también en las opciones */
+.event-status option {
+  text-align: center; /* Centrar el texto en las opciones */
+}
+
+.event-status:hover {
+  border-color: #d4a508; /* Color del borde al pasar el ratón */
+}
+
+.event-status:focus {
+  border-color: #B3762C; /* Color del borde al enfocar */
+  box-shadow: 0 0 5px rgba(180, 228, 5, 0.5); /* Sombra al enfocar */
+}

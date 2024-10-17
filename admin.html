@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Admin - SIJUH</title>
+    <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Botón de Inicio a la izquierda (ajustado para que sea más pequeño) -->
+<button id="inicioBtn" style="position: fixed; left: 20px; top: 20px; padding: 5px 10px; background-color: #D8973C; color: white; border: none; border-radius: 5px; cursor: pointer; width: auto;">
+    Inicio
+</button>
+
+
+
+        <h1>Panel de Administración</h1>
+
+        <!-- Botón para mostrar usuarios -->
+        <button id="fetchUsersBtn">Ver Usuarios</button>
+
+        <!-- Lista desplegable de usuarios obtenidos de Firebase -->
+        <select id="userSelect" size="5" style="width: 100%; height: 150px; margin-top: 20px;">
+            <option value="">Selecciona un usuario</option>
+        </select>
+
+        <!-- Sección para mostrar los detalles del usuario -->
+        <div id="userDetails" style="display:none; margin-top: 20px;">
+            <h2>Datos del Usuario</h2>
+            <div id="userData"></div>
+            <button id="updateUserBtn">Modificar Datos</button>
+        </div>
+
+        <!-- Nueva sección para hacer una reserva -->
+        <div id="reservationSection" style="display:none; margin-top: 20px;">
+            <h2>Hacer una Reserva</h2>
+            <label for="eventAddress">Dirección del Evento:</label>
+            <input type="text" id="eventAddress" placeholder="Ingresa la dirección del evento" required>
+
+            <label for="eventStatus">Estado del Evento:</label>
+            <select id="eventStatus" class="event-status"> 
+                <option value="sin evento">Sin Evento</option>
+                <option value="en curso">En Curso</option>
+                <option value="pendiente">Pendiente</option>
+            </select>
+
+            <label for="contactNumber">Número de Contacto:</label>
+            <input type="text" id="contactNumber" placeholder="Número de contacto (9 dígitos)" maxlength="9" pattern="[0-9]{9}" required>
+
+            <button id="generateReportBtn">Generar Reporte</button>
+        </div>
+
+        <!-- Botón para eliminar usuario -->
+        <h2>Eliminar Usuario</h2>
+        <button id="deleteUserBtn">Eliminar Usuario</button>
+    </div>
+
+    <script type="module">
+        import { db } from './firebaseConfig.js';
+        import { collection, getDocs, deleteDoc, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js';
+
+        const userSelect = document.getElementById('userSelect');
+        const userDetails = document.getElementById('userDetails');
+        const reservationSection = document.getElementById('reservationSection');
+        const userDataDiv = document.getElementById('userData');
+        const fetchUsersBtn = document.getElementById('fetchUsersBtn');
+        const deleteUserBtn = document.getElementById('deleteUserBtn');
+        const updateUserBtn = document.getElementById('updateUserBtn');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+
+        const eventAddressInput = document.getElementById('eventAddress');
+        const eventStatusSelect = document.getElementById('eventStatus');
+        const contactNumberInput = document.getElementById('contactNumber');
+
+        let currentUserDocId = null; // Guardará el ID del usuario seleccionado
+
+        // Función para obtener usuarios de Firebase
+        async function fetchUsers() {
+            userSelect.innerHTML = '<option value="">Selecciona un usuario</option>'; // Limpiar el select
+
+            const querySnapshot = await getDocs(collection(db, 'users'));
+
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+
+                // Añadir el usuario al select
+                const option = document.createElement('option');
+                option.value = doc.id; // Guardar el ID del documento
+                option.textContent = `${userData.firstName} ${userData.lastName} - DNI: ${userData.dni}`;
+                userSelect.appendChild(option);
+            });
+        }
+
+        // Botón para redirigir a principal.html
+        document.getElementById('inicioBtn').addEventListener('click', () => {
+            window.location.href = 'principal.html'; // Redirigir a principal.html
+        });
+
+        // Botón para ver usuarios
+        fetchUsersBtn.addEventListener('click', fetchUsers);
+
+        // Mostrar detalles del usuario seleccionado
+        userSelect.addEventListener('change', async () => {
+            const selectedUserId = userSelect.value;
+
+            if (selectedUserId === "") {
+                userDetails.style.display = 'none';
+                reservationSection.style.display = 'none';
+                return;
+            }
+
+            try {
+                const userDoc = await getDoc(doc(db, 'users', selectedUserId));
+
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    currentUserDocId = selectedUserId; // Guardar el ID del usuario seleccionado
+
+                    // Mostrar los datos del usuario en el div
+                    userDataDiv.innerHTML = 
+                        `<p><strong>Nombre:</strong> ${userData.firstName}</p>
+                        <p><strong>Apellidos:</strong> ${userData.lastName}</p>
+                        <p><strong>DNI:</strong> ${userData.dni}</p>
+                        <p><strong>Email:</strong> ${userData.email}</p>
+                        <p><strong>Dirección del Evento:</strong> ${userData.eventAddress || ''}</p>
+                        <p><strong>Estado del Evento:</strong> ${userData.eventStatus || ''}</p>
+                        <p><strong>Número de Contacto:</strong> ${userData.contactNumber || ''}</p>`;
+
+                    userDetails.style.display = 'block'; // Mostrar la sección de detalles del usuario
+                    reservationSection.style.display = 'block'; // Mostrar la sección de reserva
+                }
+            } catch (error) {
+                alert('Error al obtener los datos del usuario: ' + error.message);
+            }
+        });
+
+        // Función para eliminar usuario
+        async function deleteUser() {
+            const selectedUserId = userSelect.value;
+
+            if (selectedUserId === "") {
+                alert('Selecciona un usuario para eliminar.');
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, 'users', selectedUserId));
+                alert('Usuario eliminado con éxito.');
+                fetchUsers(); // Refrescar la lista de usuarios
+                userDetails.style.display = 'none'; // Ocultar detalles del usuario después de eliminar
+                reservationSection.style.display = 'none'; // Ocultar la sección de reserva después de eliminar
+            } catch (error) {
+                alert('Error al eliminar el usuario: ' + error.message);
+            }
+        }
+
+        // Botón para eliminar usuario
+        deleteUserBtn.addEventListener('click', deleteUser);
+
+        // Función para modificar los datos del usuario
+        async function updateUser() {
+            if (!currentUserDocId) {
+                alert('Selecciona un usuario primero.');
+                return;
+            }
+
+            const updatedUserData = {
+                firstName: document.getElementById('userFirstName').textContent,
+                lastName: document.getElementById('userLastName').textContent,
+                dni: document.getElementById('userDni').textContent,
+                email: document.getElementById('userEmail').textContent,
+            };
+
+            try {
+                await updateDoc(doc(db, 'users', currentUserDocId), updatedUserData);
+                alert('Datos del usuario actualizados con éxito.');
+            } catch (error) {
+                alert('Error al actualizar los datos: ' + error.message);
+            }
+        }
+
+        // Botón para actualizar los datos del usuario
+        updateUserBtn.addEventListener('click', updateUser);
+
+        // Función para generar reporte de reserva y agregar a Firebase
+        async function generateReport() {
+            if (!currentUserDocId) {
+                alert('Selecciona un usuario primero.');
+                return;
+            }
+
+            const reservationData = {
+                eventAddress: eventAddressInput.value || '',
+                eventStatus: eventStatusSelect.value || '',
+                contactNumber: contactNumberInput.value || '',
+            };
+
+            // Validar número de contacto (debe tener 9 dígitos)
+            if (!/^\d{9}$/.test(reservationData.contactNumber)) {
+                alert('El número de contacto debe tener 9 dígitos.');
+                return;
+            }
+
+            try {
+                // Actualizar los datos del usuario con los nuevos detalles de la reserva
+                await updateDoc(doc(db, 'users', currentUserDocId), {
+                    eventAddress: reservationData.eventAddress,
+                    eventStatus: reservationData.eventStatus,
+                    contactNumber: reservationData.contactNumber
+                });
+
+                // Actualizar la visualización de los detalles del usuario con los nuevos datos
+                userDataDiv.innerHTML = 
+                    `<p><strong>Nombre:</strong> ${reservationData.firstName}</p>
+                    <p><strong>Apellidos:</strong> ${reservationData.lastName}</p>
+                    <p><strong>DNI:</strong> ${reservationData.dni}</p>
+                    <p><strong>Email:</strong> ${reservationData.email}</p>
+                    <p><strong>Dirección del Evento:</strong> ${reservationData.eventAddress || ''}</p>
+                    <p><strong>Estado del Evento:</strong> ${reservationData.eventStatus || ''}</p>
+                    <p><strong>Número de Contacto:</strong> ${reservationData.contactNumber || ''}</p>`;
+
+                alert('Reporte generado y datos actualizados con éxito.');
+            } catch (error) {
+                alert('Error al generar el reporte: ' + error.message);
+            }
+        }
+
+        // Botón para generar reporte
+        generateReportBtn.addEventListener('click', generateReport);
+    </script>   
+</body>
+</html>

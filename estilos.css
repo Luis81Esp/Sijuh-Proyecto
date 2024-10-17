@@ -1,0 +1,73 @@
+/* Estilos Generales */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url(imagenes/play.jpg); /* Fondo de la imagen */
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+    color: #000000; /* Texto en negro */
+}
+
+/* Barra de navegación */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #000000; /* Fondo negro para la barra */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo h1 {
+    color: #FFFFFF;
+    margin: 0;
+}
+
+nav {
+    flex: 1;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #D8973C; /* Naranja dorado en hover */
+}
+
+/* Botón de Registro/Iniciar Sesión */
+.nav-btn {
+    margin-left: 20px; /* Aumentar la separación entre el último enlace y el botón */
+}
+
+.nav-btn a {
+    background-color: #D8973C; /* Naranja dorado para el botón */
+    color: #FFFFFF;
+    padding: 8px 15px; /* Ajuste de tamaño para hacerlo más pequeño */
+    font-size: 1rem; /* Tamaño de fuente */
+    letter-spacing: 1px; /* Ajuste de espacio entre letras */
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.nav-btn a:hover {
+    background-color: #D90B08; /* Rojo al hacer hover */
+}
+

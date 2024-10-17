@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario - SIJUH</title>
+    <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Regístrate en SIJUH</h1>
+        <form id="registerForm">
+            <input type="email" id="email" placeholder="Correo electrónico" required>
+            
+            <!-- Campo de contraseña con el ícono de ojo -->
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <span class="toggle-password" id="togglePassword1">&#128065;</span> <!-- Ícono de ojo -->
+            </div>
+
+            <!-- Campo de repetir contraseña con el ícono de ojo -->
+            <div class="password-container">
+                <input type="password" id="confirmPassword" placeholder="Repetir Contraseña" required>
+                <span class="toggle-password" id="togglePassword2">&#128065;</span> <!-- Ícono de ojo -->
+            </div>
+
+            <input type="text" id="firstName" placeholder="Nombre" required>
+            <input type="text" id="lastName" placeholder="Apellidos" required>
+            <input type="text" id="dni" placeholder="DNI" maxlength="8" required>
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebaseConfig.js';
+        import { createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js';
+        import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js';
+
+        // Mostrar/Ocultar contraseñas
+        const togglePassword1 = document.getElementById('togglePassword1');
+        const passwordField = document.getElementById('password');
+        
+        togglePassword1.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            // Cambia el ícono
+            this.textContent = type === 'password' ? '👁️' : '🙈'; 
+        });
+
+        const togglePassword2 = document.getElementById('togglePassword2');
+        const confirmPasswordField = document.getElementById('confirmPassword');
+        
+        togglePassword2.addEventListener('click', function () {
+            const type = confirmPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordField.setAttribute('type', type);
+            // Cambia el ícono
+            this.textContent = type === 'password' ? '👁️' : '🙈'; 
+        });
+
+        // Validaciones del formulario
+        const registerForm = document.getElementById('registerForm');
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const dni = document.getElementById('dni').value;
+
+            // Validar que las contraseñas coincidan
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden.');
+                return;
+            }
+
+            // Validar que el DNI tenga 8 números
+            if (!/^\d{8}$/.test(dni)) {
+                alert('El DNI debe tener 8 números.');
+                return;
+            }
+
+            try {
+                // Registrar el usuario en Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Guardar los datos adicionales en Firestore
+                await addDoc(collection(db, 'users'), {
+                    uid: userCredential.user.uid,
+                    firstName,
+                    lastName,
+                    dni,
+                    email
+                });
+
+                alert('Usuario registrado con éxito');
+                window.location.href = 'index.html'; // Redireccionar a index.html después del registro
+            } catch (error) {
+                alert('Error en el registro: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
+    

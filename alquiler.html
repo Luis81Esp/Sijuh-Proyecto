@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alquiler de Combos - SIJUH</title>
+    <link rel="stylesheet" href="diseño.css"> <!-- Reutilizando los estilos -->
+</head>
+<body>
+    <div class="container">
+        <h1>Elige tu Paquete</h1>
+
+<div class="combos-container">
+    <div class="combo">
+        <img src="imagenes/paquete1.jpg" alt="Combo 1" class="combo-img">
+        <button class="combo-btn">Combo 1</button>
+    </div>
+    <div class="combo">
+        <img src="imagenes/paquete2.jpg" alt="Combo 2" class="combo-img">
+        <button class="combo-btn">Combo 2</button>
+    </div>
+    <div class="combo">
+        <img src="imagenes/paquete3.jpg" alt="Combo 3" class="combo-img">
+        <button class="combo-btn">Combo 3</button>
+    </div>
+</div>
+    <script>
+        // Lógica para manejar clicks en los combos (puedes agregar funcionalidades aquí)
+        document.querySelectorAll('.combo-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                alert(`${button.textContent} seleccionado!`);
+                // Aquí podrías redirigir o hacer alguna acción adicional
+            });
+        });
+    </script>
+</body>
+</html>
